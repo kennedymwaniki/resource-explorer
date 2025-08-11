@@ -2,6 +2,7 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import "./index.css";
 import { RouterProvider, createRouter } from "@tanstack/react-router";
+import { Analytics } from "@vercel/analytics/react";
 import { routeTree } from "./App";
 import { ThemeProvider } from "./Context/ThemeContext";
 import { FavoritesProvider } from "./Context/FavoritesContext";
@@ -19,6 +20,7 @@ createRoot(document.getElementById("root")!).render(
     <FavoritesProvider>
       <ThemeProvider>
         <RouterProvider router={router} />
+        <Analytics />
       </ThemeProvider>
     </FavoritesProvider>
   </StrictMode>
