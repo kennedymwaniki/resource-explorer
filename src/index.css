@@ -98,6 +98,22 @@
     border-top-color: rgb(var(--spinner-fill));
   }
 
+  /* Drawer animation */
+  .animate-slide-in {
+    animation: slide-in 0.25s ease-out;
+  }
+
+  @keyframes slide-in {
+    from {
+      transform: translateX(100%);
+      opacity: 0;
+    }
+    to {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
+
   @keyframes shimmer {
     0% {
       background-position: -200% 0;

@@ -11,6 +11,9 @@ import { FilterBar } from "../components/ui/FilterBar";
 import { CharacterCard } from "../components/ui/CharacterCard";
 import { Pagination } from "../components/ui/Pagination";
 import { ThemeToggle } from "../components/ui/ThemeToggle";
+import MyFavorites from "../components/ui/MyFavorites";
+import { CiHeart } from "react-icons/ci";
+import { useFavorites } from "../hooks/useFavorites";
 
 export const CharactersPage: React.FC = () => {
   const navigate = useNavigate();
@@ -35,6 +38,8 @@ export const CharactersPage: React.FC = () => {
   }, [searchParams]);
 
   const { data, isLoading, error, isFetching } = useCharacters(filters);
+  const { favorites } = useFavorites();
+  const [showDrawer, setShowDrawer] = useState(false);
 
   //  update URL with search parameters
   const updateUrlWithFilters = useCallback(
@@ -199,6 +204,16 @@ export const CharactersPage: React.FC = () => {
                 </p>
               </div>
             )}
+            <div className="ml-4 flex items-center">
+              <Button
+                variant="primary"
+                onClick={() => setShowDrawer(true)}
+                className="flex items-center gap-2"
+              >
+                <CiHeart className={favorites.length ? "text-red-500" : ""} />
+                Favorites ({favorites.length})
+              </Button>
+            </div>
           </div>
         </div>
       </div>
@@ -239,7 +254,6 @@ export const CharactersPage: React.FC = () => {
               ))}
         </div>
 
-        {/* Pagination */}
         {data && !error && (
           <Pagination
             currentPage={filters.page || 1}
@@ -251,6 +265,37 @@ export const CharactersPage: React.FC = () => {
           />
         )}
       </div>
+
+      {showDrawer && (
+        <>
+          <div
+            className="fixed inset-0 bg-black/40 z-40"
+            onClick={() => setShowDrawer(false)}
+            aria-label="Close favorites drawer"
+          />
+          <aside
+            className="fixed top-0 right-0 h-full w-full sm:w-[420px] max-w-[90vw] bg-theme-card shadow-xl z-50 flex flex-col border-l border-theme-primary animate-slide-in"
+            role="dialog"
+            aria-modal="true"
+          >
+            <div className="flex items-center justify-between p-4 border-b border-theme-primary">
+              <h2 className="text-xl font-semibold text-theme-primary flex items-center gap-2">
+                <CiHeart className="text-red-500" /> Favorites
+              </h2>
+              <button
+                onClick={() => setShowDrawer(false)}
+                className="text-theme-secondary hover:text-theme-primary transition-colors"
+                aria-label="Close"
+              >
+                ✕
+              </button>
+            </div>
+            <div className="p-4 overflow-y-auto flex-1">
+              <MyFavorites onSelect={() => setShowDrawer(false)} />
+            </div>
+          </aside>
+        </>
+      )}
     </div>
   );
 };

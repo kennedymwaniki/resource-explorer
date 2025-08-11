@@ -1,6 +1,8 @@
 import React from "react";
 import type { Character } from "../../types/charactertypes";
 import { Card } from "./Card";
+import { CiHeart } from "react-icons/ci";
+import { useFavorites } from "../../hooks/useFavorites";
 
 interface CharacterCardProps {
   character: Character;
@@ -11,6 +13,8 @@ export const CharacterCard: React.FC<CharacterCardProps> = ({
   character,
   onClick,
 }) => {
+  const { isFavorite, toggleFavorite } = useFavorites();
+
   const getStatusColor = (status: string) => {
     switch (status.toLowerCase()) {
       case "alive":
@@ -50,15 +54,34 @@ export const CharacterCard: React.FC<CharacterCardProps> = ({
           className="w-full h-64 object-cover"
           loading="lazy"
         />
-        <div className="absolute top-2 right-2 flex items-center">
-          <span
-            className={`
-              w-3 h-3 rounded-full mr-2 ${getStatusColor(character.status)}
-            `}
-          />
-          <span className="bg-black bg-opacity-70 text-white px-2 py-1 rounded text-xs">
-            {getStatusText(character.status)}
-          </span>
+        <div className="absolute top-2 right-2 flex flex-col items-end gap-2">
+          <div className="flex items-center">
+            <span
+              className={`w-3 h-3 rounded-full mr-2 ${getStatusColor(
+                character.status
+              )}`}
+            />
+            <span className="bg-black bg-opacity-70 text-white px-2 py-1 rounded text-xs">
+              {getStatusText(character.status)}
+            </span>
+          </div>
+          <button
+            type="button"
+            aria-label={
+              isFavorite(character.id) ? "Remove favorite" : "Add favorite"
+            }
+            onClick={(e) => {
+              e.stopPropagation();
+              toggleFavorite(character);
+            }}
+            className="p-1 rounded-full bg-black/60 hover:bg-black/80 transition-colors"
+          >
+            <CiHeart
+              className={`text-2xl ${
+                isFavorite(character.id) ? "text-red-500" : "text-white"
+              }`}
+            />
+          </button>
         </div>
       </div>
 
