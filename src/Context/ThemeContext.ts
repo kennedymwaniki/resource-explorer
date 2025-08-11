@@ -64,7 +64,7 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({
       try {
         window.localStorage.setItem(THEME_STORAGE_KEY, t);
       } catch {
-        /* ignore storage errors */
+        console.error("Failed to save theme to localStorage");
       }
       applyThemeClass(t);
     },
@@ -73,7 +73,7 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const toggleTheme = useCallback(() => {
     const newTheme = theme === "light" ? "dark" : "light";
-    console.log("Toggling theme from", theme, "to", newTheme); // Debug log
+
     setTheme(newTheme);
   }, [theme, setTheme]);
 
