@@ -19,8 +19,7 @@ export const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
     <div className={`inline-block ${className}`}>
       <div
         className={`
-          ${sizes[size]} animate-spin rounded-full border-2 border-theme-muted 
-          border-t-blue-600
+          ${sizes[size]} animate-spin rounded-full border-2 spinner-theme
         `}
       />
     </div>
@@ -29,12 +28,12 @@ export const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
 
 export const LoadingCard: React.FC = () => {
   return (
-    <div className="bg-theme-card rounded-lg shadow-md border border-theme-primary overflow-hidden animate-pulse">
-      <div className="h-64 bg-theme-secondary"></div>
+    <div className="bg-theme-card rounded-lg shadow-md border border-theme-primary overflow-hidden">
+      <div className="h-64 bg-skeleton skeleton-shimmer skeleton-pulse"></div>
       <div className="p-4 space-y-3">
-        <div className="h-4 bg-theme-secondary rounded w-3/4"></div>
-        <div className="h-3 bg-theme-secondary rounded w-1/2"></div>
-        <div className="h-3 bg-theme-secondary rounded w-1/3"></div>
+        <div className="h-4 bg-skeleton skeleton-shimmer skeleton-pulse rounded w-3/4"></div>
+        <div className="h-3 bg-skeleton skeleton-shimmer skeleton-pulse rounded w-1/2"></div>
+        <div className="h-3 bg-skeleton skeleton-shimmer skeleton-pulse rounded w-1/3"></div>
       </div>
     </div>
   );

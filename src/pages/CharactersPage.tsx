@@ -221,9 +221,7 @@ export const CharactersPage: React.FC = () => {
         {isFetching && (
           <div className="flex items-center justify-center py-4">
             <LoadingSpinner size="md" className="mr-2" />
-            <span className="text-gray-600 dark:text-gray-300">
-              Loading characters...
-            </span>
+            <span className="text-theme-secondary">Loading characters...</span>
           </div>
         )}
 

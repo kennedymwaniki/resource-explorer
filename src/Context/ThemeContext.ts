@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-expressions */
 import React, {
   createContext,
   useContext,
@@ -52,14 +53,13 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({
       root.classList.add("light");
     }
 
-    // Force a reflow to ensure the classes are applied
     root.offsetHeight;
     console.log("Root classes:", root.classList.toString()); // Debug log
   }, []);
 
   const setTheme = useCallback(
     (t: Theme) => {
-      console.log("Setting theme to:", t); // Debug log
+      console.log("Setting theme to:", t);
       setThemeState(t);
       try {
         window.localStorage.setItem(THEME_STORAGE_KEY, t);
@@ -77,7 +77,6 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({
     setTheme(newTheme);
   }, [theme, setTheme]);
 
-  // Initialize on mount
   useEffect(() => {
     applyThemeClass(theme);
   }, [theme, applyThemeClass]);
