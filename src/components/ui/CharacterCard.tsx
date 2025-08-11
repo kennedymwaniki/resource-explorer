@@ -38,7 +38,7 @@ export const CharacterCard: React.FC<CharacterCardProps> = ({
     <Card
       padding={false}
       className={`
-        transition-transform duration-200 hover:scale-105 hover:shadow-lg
+    transition-transform duration-200 hover:scale-105 hover:shadow-lg
         ${onClick ? "cursor-pointer" : ""}
       `}
       onClick={handleClick}
@@ -63,11 +63,11 @@ export const CharacterCard: React.FC<CharacterCardProps> = ({
       </div>
 
       <div className="p-4">
-        <h3 className="text-lg font-semibold text-gray-900 mb-2 truncate">
+        <h3 className="text-lg font-semibold text-theme-primary mb-2 truncate">
           {character.name}
         </h3>
 
-        <div className="space-y-2 text-sm text-gray-600">
+        <div className="space-y-2 text-sm text-theme-secondary">
           <div className="flex justify-between">
             <span className="font-medium">Species:</span>
             <span className="truncate ml-2">{character.species}</span>

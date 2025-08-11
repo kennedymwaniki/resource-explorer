@@ -26,7 +26,7 @@ export const Select: React.FC<SelectProps> = ({
       {label && (
         <label
           htmlFor={selectId}
-          className="block text-sm font-medium text-gray-700 mb-1"
+          className="block text-sm font-medium text-theme-primary mb-1"
         >
           {label}
         </label>
@@ -34,9 +34,9 @@ export const Select: React.FC<SelectProps> = ({
       <select
         id={selectId}
         className={`
-          block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm 
-          bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 
-          focus:border-blue-500 sm:text-sm
+          block w-full px-3 py-2 border border-theme-primary rounded-md shadow-sm 
+      bg-theme-card text-theme-primary focus:outline-none focus:ring-2 focus:ring-blue-500 
+      focus:border-blue-500 sm:text-sm transition-colors
           ${
             error
               ? "border-red-500 focus:ring-red-500 focus:border-red-500"

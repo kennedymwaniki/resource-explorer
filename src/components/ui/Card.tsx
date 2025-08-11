@@ -16,7 +16,8 @@ export const Card: React.FC<CardProps> = ({
   return (
     <div
       className={`
-        bg-white rounded-lg shadow-md border border-gray-200 overflow-hidden
+        bg-theme-card rounded-lg shadow-md border border-theme-primary overflow-hidden
+        transition-colors duration-200
         ${padding ? "p-6" : ""}
         ${className}
       `}

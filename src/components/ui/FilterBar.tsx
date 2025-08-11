@@ -15,11 +15,12 @@ export const FilterBar: React.FC<FilterBarProps> = ({
   onFiltersChange,
   onClearFilters,
 }) => {
+  console.log("FilterBar received filters:", filters);
   const handleStatusChange = (status: string) => {
     onFiltersChange({
       ...filters,
       status: status as CharacterFilters["status"],
-      page: 1,
+      page: 1, 
     });
   };
 
@@ -27,14 +28,14 @@ export const FilterBar: React.FC<FilterBarProps> = ({
     onFiltersChange({
       ...filters,
       gender: gender as CharacterFilters["gender"],
-      page: 1,
+      page: 1, 
     });
   };
 
-  const hasActiveFilters = filters.status || filters.gender || filters.name;
+  const hasActiveFilters = Boolean(filters.status) || Boolean(filters.gender);
 
   return (
-    <div className="bg-white p-4 rounded-lg shadow-md border border-gray-200">
+    <div className="bg-theme-card p-4 rounded-lg shadow-md border border-theme-primary">
       <div className="flex flex-col sm:flex-row gap-4 items-end">
         <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-4">
           <Select
@@ -65,7 +66,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
 
       {hasActiveFilters && (
         <div className="mt-3 flex flex-wrap gap-2">
-          <span className="text-sm text-gray-600">Active filters:</span>
+          <span className="text-sm text-theme-secondary">Active filters:</span>
           {filters.status && (
             <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
               Status:{" "}

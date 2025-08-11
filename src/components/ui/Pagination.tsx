@@ -26,7 +26,6 @@ export const Pagination: React.FC<PaginationProps> = ({
     let startPage = Math.max(1, currentPage - halfVisible);
     let endPage = Math.min(totalPages, currentPage + halfVisible);
 
-    // Adjust if we're near the beginning or end
     if (endPage - startPage + 1 < maxVisiblePages) {
       if (startPage === 1) {
         endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
@@ -47,7 +46,7 @@ export const Pagination: React.FC<PaginationProps> = ({
   if (totalPages <= 1) return null;
 
   return (
-    <div className="flex items-center justify-between px-4 py-3 bg-white border-t border-gray-200 sm:px-6">
+    <div className="flex items-center justify-between px-4 py-3 bg-theme-card border-t border-theme-primary sm:px-6">
       <div className="flex justify-between flex-1 sm:hidden">
         <Button
           variant="outline"
@@ -56,7 +55,7 @@ export const Pagination: React.FC<PaginationProps> = ({
         >
           Previous
         </Button>
-        <span className="flex items-center text-sm text-gray-700">
+        <span className="flex items-center text-sm text-theme-secondary">
           Page {currentPage} of {totalPages}
         </span>
         <Button
@@ -70,7 +69,7 @@ export const Pagination: React.FC<PaginationProps> = ({
 
       <div className="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
         <div>
-          <p className="text-sm text-gray-700">
+          <p className="text-sm text-theme-secondary">
             Page <span className="font-medium">{currentPage}</span> of{" "}
             <span className="font-medium">{totalPages}</span>
           </p>
@@ -85,7 +84,7 @@ export const Pagination: React.FC<PaginationProps> = ({
             <button
               onClick={() => onPageChange(currentPage - 1)}
               disabled={!hasPrevPage || isLoading}
-              className="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="relative inline-flex items-center px-2 py-2 rounded-l-md border border-theme-primary bg-theme-card text-sm font-medium text-theme-secondary hover:bg-theme-secondary disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
               <span className="sr-only">Previous</span>
               <svg
@@ -108,12 +107,12 @@ export const Pagination: React.FC<PaginationProps> = ({
                 <button
                   onClick={() => onPageChange(1)}
                   disabled={isLoading}
-                  className="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50"
+                  className="relative inline-flex items-center px-4 py-2 border border-theme-primary bg-theme-card text-sm font-medium text-theme-primary hover:bg-theme-secondary disabled:opacity-50 transition-colors"
                 >
                   1
                 </button>
                 {pageNumbers[0] > 2 && (
-                  <span className="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700">
+                  <span className="relative inline-flex items-center px-4 py-2 border border-theme-primary bg-theme-card text-sm font-medium text-theme-secondary">
                     ...
                   </span>
                 )}
@@ -127,11 +126,11 @@ export const Pagination: React.FC<PaginationProps> = ({
                 onClick={() => onPageChange(page)}
                 disabled={isLoading}
                 className={`
-                  relative inline-flex items-center px-4 py-2 border text-sm font-medium disabled:opacity-50
+                  relative inline-flex items-center px-4 py-2 border text-sm font-medium disabled:opacity-50 transition-colors
                   ${
                     page === currentPage
                       ? "z-10 bg-blue-50 border-blue-500 text-blue-600"
-                      : "bg-white border-gray-300 text-gray-700 hover:bg-gray-50"
+                      : "bg-theme-card border-theme-primary text-theme-primary hover:bg-theme-secondary"
                   }
                 `}
               >
@@ -143,14 +142,14 @@ export const Pagination: React.FC<PaginationProps> = ({
             {pageNumbers[pageNumbers.length - 1] < totalPages && (
               <>
                 {pageNumbers[pageNumbers.length - 1] < totalPages - 1 && (
-                  <span className="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700">
+                  <span className="relative inline-flex items-center px-4 py-2 border border-theme-primary bg-theme-card text-sm font-medium text-theme-secondary">
                     ...
                   </span>
                 )}
                 <button
                   onClick={() => onPageChange(totalPages)}
                   disabled={isLoading}
-                  className="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50"
+                  className="relative inline-flex items-center px-4 py-2 border border-theme-primary bg-theme-card text-sm font-medium text-theme-primary hover:bg-theme-secondary disabled:opacity-50 transition-colors"
                 >
                   {totalPages}
                 </button>
@@ -161,7 +160,7 @@ export const Pagination: React.FC<PaginationProps> = ({
             <button
               onClick={() => onPageChange(currentPage + 1)}
               disabled={!hasNextPage || isLoading}
-              className="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="relative inline-flex items-center px-2 py-2 rounded-r-md border border-theme-primary bg-theme-card text-sm font-medium text-theme-secondary hover:bg-theme-secondary disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
               <span className="sr-only">Next</span>
               <svg

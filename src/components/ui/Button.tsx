@@ -19,12 +19,13 @@ export const Button: React.FC<ButtonProps> = ({
 
   const variants = {
     primary: "bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500",
-    secondary: "bg-gray-600 text-white hover:bg-gray-700 focus:ring-gray-500",
+    secondary:
+      "bg-theme-secondary text-theme-primary hover:bg-theme-primary hover:text-theme-secondary focus:ring-blue-500",
     outline:
-      "border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 focus:ring-blue-500",
+      "border border-theme-primary bg-theme-card text-theme-primary hover:bg-theme-primary hover:text-theme-card focus:ring-blue-500",
     ghost:
-      "text-gray-600 hover:text-gray-900 hover:bg-gray-100 focus:ring-blue-500",
-  };
+      "text-theme-secondary hover:text-theme-primary hover:bg-theme-secondary focus:ring-blue-500",
+  } as const;
 
   const sizes = {
     sm: "px-3 py-1.5 text-sm",

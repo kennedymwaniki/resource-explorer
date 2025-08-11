@@ -1,1 +1,67 @@
 @import "tailwindcss";
+
+/* Theme variables using Tailwind v4 approach */
+@layer base {
+  html {
+    /* Light theme */
+    --bg-primary: 249 250 251; /* gray-50 */
+    --bg-secondary: 255 255 255; /* white */
+    --bg-card: 255 255 255; /* white */
+    --text-primary: 17 24 39; /* gray-900 */
+    --text-secondary: 107 114 128; /* gray-500 */
+    --text-muted: 156 163 175; /* gray-400 */
+    --border-primary: 229 231 235; /* gray-200 */
+    --border-secondary: 209 213 219; /* gray-300 */
+  }
+
+  .dark {
+    --bg-primary: 17 24 39; /* gray-900 */
+    --bg-secondary: 31 41 55; /* gray-800 */
+    --bg-card: 31 41 55; /* gray-800 */
+    --text-primary: 249 250 251; /* gray-50 */
+    --text-secondary: 156 163 175; /* gray-400 */
+    --text-muted: 107 114 128; /* gray-500 */
+    --border-primary: 55 65 81; /* gray-700 */
+    --border-secondary: 75 85 99; /* gray-600 */
+  }
+
+  /* Apply theme variables to body */
+  body {
+    background-color: rgb(var(--bg-primary));
+    color: rgb(var(--text-primary));
+    transition: background-color 0.3s ease, color 0.3s ease,
+      border-color 0.3s ease;
+  }
+}
+
+
+@layer utilities {
+  .bg-theme-primary {
+    background-color: rgb(var(--bg-primary));
+  }
+  .bg-theme-secondary {
+    background-color: rgb(var(--bg-secondary));
+  }
+  .bg-theme-card {
+    background-color: rgb(var(--bg-card));
+  }
+  .text-theme-primary {
+    color: rgb(var(--text-primary));
+  }
+  .text-theme-secondary {
+    color: rgb(var(--text-secondary));
+  }
+  .text-theme-muted {
+    color: rgb(var(--text-muted));
+  }
+  .border-theme-primary {
+    border-color: rgb(var(--border-primary));
+  }
+  .border-theme-secondary {
+    border-color: rgb(var(--border-secondary));
+  }
+
+  .placeholder-theme-muted::placeholder {
+    color: rgb(var(--text-muted));
+  }
+}

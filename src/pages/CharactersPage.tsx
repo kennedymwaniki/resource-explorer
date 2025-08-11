@@ -1,5 +1,6 @@
-import React, { useState, useCallback, useMemo } from "react";
-import { useNavigate } from "@tanstack/react-router";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import React, { useState, useCallback, useMemo, useEffect } from "react";
+import { useNavigate, useSearch } from "@tanstack/react-router";
 
 import { Button } from "../components/ui/Button";
 import type { Character, CharacterFilters } from "../types/charactertypes";
@@ -9,45 +10,105 @@ import { SearchBar } from "../components/ui/SearchBar";
 import { FilterBar } from "../components/ui/FilterBar";
 import { CharacterCard } from "../components/ui/CharacterCard";
 import { Pagination } from "../components/ui/Pagination";
+import { ThemeToggle } from "../components/ui/ThemeToggle";
 
 export const CharactersPage: React.FC = () => {
   const navigate = useNavigate();
+
+  const searchParams = useSearch({ from: "/character" }) as any;
+
   const [filters, setFilters] = useState<CharacterFilters>({
-    page: 1,
-    status: "",
-    gender: "",
-    name: "",
+    page: parseInt(searchParams?.page || "1", 10),
+    status: searchParams?.status || "",
+    gender: searchParams?.gender || "",
+    name: searchParams?.name || "",
   });
+
+  // sync filters with URL search parameters
+  useEffect(() => {
+    setFilters({
+      page: parseInt(searchParams?.page || "1", 10),
+      status: searchParams?.status || "",
+      gender: searchParams?.gender || "",
+      name: searchParams?.name || "",
+    });
+  }, [searchParams]);
 
   const { data, isLoading, error, isFetching } = useCharacters(filters);
 
-  const handleSearch = useCallback((name: string) => {
-    setFilters((prev) => ({
-      ...prev,
-      name,
-      page: 1,
-    }));
-  }, []);
+  //  update URL with search parameters
+  const updateUrlWithFilters = useCallback(
+    (newFilters: CharacterFilters) => {
+      const searchObj: Record<string, any> = {};
+      if (newFilters.page && newFilters.page > 1) {
+        searchObj.page = newFilters.page;
+      }
+      if (newFilters.name && newFilters.name.trim()) {
+        searchObj.name = newFilters.name.trim();
+      }
+      if (newFilters.status) {
+        searchObj.status = newFilters.status;
+      }
+      if (newFilters.gender) {
+        searchObj.gender = newFilters.gender;
+      }
 
-  const handleFiltersChange = useCallback((newFilters: CharacterFilters) => {
-    setFilters(newFilters);
-  }, []);
+      navigate({
+        to: "/character",
+        search: searchObj,
+        replace: false,
+      });
+    },
+    [navigate]
+  );
+
+  const handleSearch = useCallback(
+    (name: string) => {
+      const newFilters = {
+        ...filters,
+        name,
+        page: 1,
+      };
+      setFilters(newFilters);
+      updateUrlWithFilters(newFilters);
+    },
+    [filters, updateUrlWithFilters]
+  );
+
+  const handleFiltersChange = useCallback(
+    (newFilters: CharacterFilters) => {
+      setFilters(newFilters);
+      updateUrlWithFilters(newFilters);
+    },
+    [updateUrlWithFilters]
+  );
 
   const handleClearFilters = useCallback(() => {
-    setFilters({
+    const clearedFilters: CharacterFilters = {
       page: 1,
       status: "",
       gender: "",
       name: "",
+    };
+    setFilters(clearedFilters);
+    navigate({
+      to: "/character",
+      search: {},
+      replace: false,
     });
-  }, []);
+  }, [navigate]);
 
-  const handlePageChange = useCallback((page: number) => {
-    setFilters((prev) => ({
-      ...prev,
-      page,
-    }));
-  }, []);
+  const handlePageChange = useCallback(
+    (page: number) => {
+      const newFilters = {
+        ...filters,
+        page,
+      };
+      setFilters(newFilters);
+      updateUrlWithFilters(newFilters);
+    },
+    [filters, updateUrlWithFilters]
+  );
 
   const handleCharacterClick = useCallback(
     (character: Character) => {
@@ -78,10 +139,10 @@ export const CharactersPage: React.FC = () => {
       return (
         <div className="col-span-full text-center py-12">
           <div className="max-w-md mx-auto">
-            <h3 className="text-lg font-medium text-gray-900 mb-2">
+            <h3 className="text-lg font-medium text-theme-primary mb-2">
               No characters found
             </h3>
-            <p className="text-gray-500 mb-4">
+            <p className="text-theme-secondary mb-4">
               No characters match your current search criteria. Try adjusting
               your filters or search terms.
             </p>
@@ -96,10 +157,10 @@ export const CharactersPage: React.FC = () => {
     return (
       <div className="col-span-full text-center py-12">
         <div className="max-w-md mx-auto">
-          <h3 className="text-lg font-medium text-gray-900 mb-2">
+          <h3 className="text-lg font-medium text-theme-primary mb-2">
             Something went wrong
           </h3>
-          <p className="text-gray-500 mb-4">
+          <p className="text-theme-secondary mb-4">
             Failed to load characters. Please try again.
           </p>
           <Button onClick={() => window.location.reload()} variant="primary">
@@ -111,26 +172,29 @@ export const CharactersPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-theme-primary transition-colors">
       {/* Header */}
-      <div className="bg-white shadow-sm border-b border-gray-200">
+      <div className="bg-theme-card shadow-sm border-b border-theme-primary">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900">
-                Rick and Morty Characters
-              </h1>
-              <p className="mt-1 text-sm text-gray-500">
-                Explore all characters from the Rick and Morty universe
-              </p>
+            <div className="flex items-start gap-6">
+              <div>
+                <h1 className="text-3xl font-bold text-theme-primary">
+                  Rick and Morty Characters
+                </h1>
+                <p className="mt-1 text-sm text-theme-secondary">
+                  Explore all characters from the Rick and Morty universe
+                </p>
+              </div>
+              <ThemeToggle />
             </div>
             {data && (
               <div className="text-right">
-                <p className="text-sm text-gray-500">
+                <p className="text-sm text-gray-500 dark:text-gray-400">
                   Total characters:{" "}
                   <span className="font-medium">{data.info.count}</span>
                 </p>
-                <p className="text-sm text-gray-500">
+                <p className="text-sm text-gray-500 dark:text-gray-400">
                   Page {filters.page || 1} of {data.info.pages}
                 </p>
               </div>
@@ -157,7 +221,9 @@ export const CharactersPage: React.FC = () => {
         {isFetching && (
           <div className="flex items-center justify-center py-4">
             <LoadingSpinner size="md" className="mr-2" />
-            <span className="text-gray-600">Loading characters...</span>
+            <span className="text-gray-600 dark:text-gray-300">
+              Loading characters...
+            </span>
           </div>
         )}
 
