@@ -27,15 +27,38 @@ export const CharactersPage: React.FC = () => {
     name: searchParams?.name || "",
   });
 
-  // sync filters with URL search parameters
-  useEffect(() => {
-    setFilters({
+  // Helper to compare filters
+  const areFiltersEqual = useCallback(
+    (a: CharacterFilters, b: CharacterFilters) =>
+      a.page === b.page &&
+      a.status === b.status &&
+      a.gender === b.gender &&
+      a.name === b.name,
+    []
+  );
+
+  // Derive current URL filters with stable dependencies (avoid using whole object in deps)
+  const currentUrlFilters = useMemo<CharacterFilters>(
+    () => ({
       page: parseInt(searchParams?.page || "1", 10),
       status: searchParams?.status || "",
       gender: searchParams?.gender || "",
       name: searchParams?.name || "",
-    });
-  }, [searchParams]);
+    }),
+    [
+      searchParams?.page,
+      searchParams?.status,
+      searchParams?.gender,
+      searchParams?.name,
+    ]
+  );
+
+  // sync url with filters only when values actually change
+  useEffect(() => {
+    setFilters((prev) =>
+      areFiltersEqual(prev, currentUrlFilters) ? prev : currentUrlFilters
+    );
+  }, [currentUrlFilters, areFiltersEqual]);
 
   const { data, isLoading, error, isFetching } = useCharacters(filters);
   const { favorites } = useFavorites();
@@ -44,48 +67,41 @@ export const CharactersPage: React.FC = () => {
   //  update URL with search parameters
   const updateUrlWithFilters = useCallback(
     (newFilters: CharacterFilters) => {
-      const searchObj: Record<string, any> = {};
-      if (newFilters.page && newFilters.page > 1) {
-        searchObj.page = newFilters.page;
-      }
-      if (newFilters.name && newFilters.name.trim()) {
-        searchObj.name = newFilters.name.trim();
-      }
-      if (newFilters.status) {
-        searchObj.status = newFilters.status;
-      }
-      if (newFilters.gender) {
-        searchObj.gender = newFilters.gender;
-      }
+      // skip navigation if URL already reflects these filters
+      if (areFiltersEqual(newFilters, currentUrlFilters)) return;
 
-      navigate({
-        to: "/character",
-        search: searchObj,
-        replace: false,
-      });
+      const searchObj: Record<string, any> = {};
+      if (newFilters.page && newFilters.page > 1)
+        searchObj.page = newFilters.page;
+      if (newFilters.name && newFilters.name.trim())
+        searchObj.name = newFilters.name.trim();
+      if (newFilters.status) searchObj.status = newFilters.status;
+      if (newFilters.gender) searchObj.gender = newFilters.gender;
+
+      navigate({ to: "/character", search: searchObj, replace: false });
     },
-    [navigate]
+    [navigate, areFiltersEqual, currentUrlFilters]
   );
 
   const handleSearch = useCallback(
     (name: string) => {
-      const newFilters = {
-        ...filters,
-        name,
-        page: 1,
-      };
-      setFilters(newFilters);
+      const newFilters = { ...filters, name, page: 1 };
+      setFilters((prev) =>
+        areFiltersEqual(prev, newFilters) ? prev : newFilters
+      );
       updateUrlWithFilters(newFilters);
     },
-    [filters, updateUrlWithFilters]
+    [filters, updateUrlWithFilters, areFiltersEqual]
   );
 
   const handleFiltersChange = useCallback(
     (newFilters: CharacterFilters) => {
-      setFilters(newFilters);
+      setFilters((prev) =>
+        areFiltersEqual(prev, newFilters) ? prev : newFilters
+      );
       updateUrlWithFilters(newFilters);
     },
-    [updateUrlWithFilters]
+    [updateUrlWithFilters, areFiltersEqual]
   );
 
   const handleClearFilters = useCallback(() => {
@@ -105,14 +121,13 @@ export const CharactersPage: React.FC = () => {
 
   const handlePageChange = useCallback(
     (page: number) => {
-      const newFilters = {
-        ...filters,
-        page,
-      };
-      setFilters(newFilters);
+      const newFilters = { ...filters, page };
+      setFilters((prev) =>
+        areFiltersEqual(prev, newFilters) ? prev : newFilters
+      );
       updateUrlWithFilters(newFilters);
     },
-    [filters, updateUrlWithFilters]
+    [filters, updateUrlWithFilters, areFiltersEqual]
   );
 
   const handleCharacterClick = useCallback(
@@ -159,6 +174,16 @@ export const CharactersPage: React.FC = () => {
       );
     }
 
+    // no error for aborted state
+    if (
+      error &&
+      typeof error === "object" &&
+      "name" in error &&
+      error.name === "AbortError"
+    ) {
+      return null;
+    }
+
     return (
       <div className="col-span-full text-center py-12">
         <div className="max-w-md mx-auto">
@@ -178,7 +203,6 @@ export const CharactersPage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-theme-primary transition-colors">
-      {/* Header */}
       <div className="bg-theme-card shadow-sm border-b border-theme-primary">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex items-center justify-between">

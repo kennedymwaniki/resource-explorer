@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useRef, useEffect } from "react";
 import { Input } from "./Input";
 import { Button } from "./Button";
 
@@ -14,19 +14,81 @@ export const SearchBar: React.FC<SearchBarProps> = ({
   initialValue = "",
 }) => {
   const [query, setQuery] = useState(initialValue);
+  const debounceTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const isInitialMount = useRef(true);
+
+  // trigger search after user stops typing
+  useEffect(() => {
+    // skip the initial mount to prevent unnecessary API calls
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+      return;
+    }
+
+    // Clear previous timeout
+    if (debounceTimeoutRef.current) {
+      clearTimeout(debounceTimeoutRef.current);
+    }
+
+    // Set new timeout for debounced search
+    debounceTimeoutRef.current = setTimeout(() => {
+      onSearch(query.trim());
+    }, 500); 
+
+    // cleanup timeout on component unmount or dependency change
+    return () => {
+      if (debounceTimeoutRef.current) {
+        clearTimeout(debounceTimeoutRef.current);
+      }
+    };
+  }, [query, onSearch]);
 
   const handleSubmit = useCallback(
     (e: React.FormEvent) => {
       e.preventDefault();
+
+      // Clear debounce timeout since we're submitting immediately
+      if (debounceTimeoutRef.current) {
+        clearTimeout(debounceTimeoutRef.current);
+      }
+
       onSearch(query.trim());
     },
     [query, onSearch]
   );
 
   const handleClear = useCallback(() => {
+    // clear debounce timeout
+    if (debounceTimeoutRef.current) {
+      clearTimeout(debounceTimeoutRef.current);
+    }
+
     setQuery("");
     onSearch("");
   }, [onSearch]);
+
+  const handleInputChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setQuery(e.target.value);
+    },
+    []
+  );
+
+  // update local state when initialValue changes (e.g., from URL params)
+  useEffect(() => {
+    if (initialValue !== query) {
+      setQuery(initialValue);
+    }
+  }, [initialValue]);
+
+  // cleanup timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (debounceTimeoutRef.current) {
+        clearTimeout(debounceTimeoutRef.current);
+      }
+    };
+  }, []);
 
   return (
     <form onSubmit={handleSubmit} className="w-full">
@@ -35,9 +97,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({
           <Input
             type="text"
             value={query}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-              setQuery(e.target.value)
-            }
+            onChange={handleInputChange}
             placeholder={placeholder}
             className="w-full"
           />

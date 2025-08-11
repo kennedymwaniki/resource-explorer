@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "@tanstack/react-router";
+import { useNavigate } from "@tanstack/react-router";
 
 import { Card } from "../components/ui/Card";
 import { Button } from "../components/ui/Button";
@@ -15,6 +15,7 @@ export const CharacterDetailPage: React.FC<CharacterDetailPageProps> = ({
   characterId,
 }) => {
   const { data: character, isLoading, error } = useCharacterById(characterId);
+  const navigate = useNavigate();
 
   const getStatusColor = (status: string) => {
     switch (status.toLowerCase()) {
@@ -50,9 +51,18 @@ export const CharacterDetailPage: React.FC<CharacterDetailPageProps> = ({
               The character you're looking for doesn't exist or couldn't be
               loaded.
             </p>
-            <Link to="/">
-              <Button variant="primary">Go Back</Button>
-            </Link>
+            <Button
+              variant="primary"
+              onClick={() => {
+                if (window.history.length > 1) {
+                  window.history.back();
+                } else {
+                  navigate({ to: "/character" });
+                }
+              }}
+            >
+              Go Back
+            </Button>
           </div>
         </Card>
       </div>
@@ -64,12 +74,20 @@ export const CharacterDetailPage: React.FC<CharacterDetailPageProps> = ({
   return (
     <div className="min-h-screen bg-theme-primary">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      
         <div className="mb-8">
           <div className="flex items-center justify-between mb-4">
-            <Link to="/">
-              <Button variant="outline">← Back to Characters</Button>
-            </Link>
+            <Button
+              variant="outline"
+              onClick={() => {
+                if (window.history.length > 1) {
+                  window.history.back();
+                } else {
+                  navigate({ to: "/character" });
+                }
+              }}
+            >
+              ← Back
+            </Button>
             <ThemeToggle />
           </div>
 

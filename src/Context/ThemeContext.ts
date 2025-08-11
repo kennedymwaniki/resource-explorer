@@ -19,7 +19,6 @@ const ThemeContext = createContext<ThemeContextValue | undefined>(undefined);
 
 const THEME_STORAGE_KEY = "app-theme";
 
-// Helper to get initial theme: localStorage -> system preference -> light
 function getInitialTheme(): Theme {
   if (typeof window === "undefined") return "light";
   try {
@@ -43,7 +42,7 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const applyThemeClass = useCallback((t: Theme) => {
     const root = document.documentElement;
-    console.log("Applying theme:", t); // Debug log
+    console.log("Applying theme:", t);
 
     if (t === "dark") {
       root.classList.add("dark");
