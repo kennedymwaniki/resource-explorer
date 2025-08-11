@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useRef, useEffect } from "react";
+import React, { useState, useCallback, useRef, useEffect, memo } from "react";
 import { Input } from "./Input";
 import { Button } from "./Button";
 
@@ -8,7 +8,7 @@ interface SearchBarProps {
   initialValue?: string;
 }
 
-export const SearchBar: React.FC<SearchBarProps> = ({
+const SearchBarComponent: React.FC<SearchBarProps> = ({
   onSearch,
   placeholder = "Search characters...",
   initialValue = "",
@@ -16,6 +16,13 @@ export const SearchBar: React.FC<SearchBarProps> = ({
   const [query, setQuery] = useState(initialValue);
   const debounceTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const isInitialMount = useRef(true);
+  // Keep a stable reference to the latest onSearch to avoid effect re-runs causing unintended searches
+  const onSearchRef = useRef(onSearch);
+
+  // Update the ref whenever onSearch changes without triggering a search
+  useEffect(() => {
+    onSearchRef.current = onSearch;
+  }, [onSearch]);
 
   // trigger search after user stops typing
   useEffect(() => {
@@ -32,7 +39,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({
 
     // Set new timeout for debounced search
     debounceTimeoutRef.current = setTimeout(() => {
-      onSearch(query.trim());
+      onSearchRef.current(query.trim());
     }, 500);
 
     // cleanup timeout on component unmount or dependency change
@@ -41,7 +48,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({
         clearTimeout(debounceTimeoutRef.current);
       }
     };
-  }, [query, onSearch]);
+  }, [query]);
 
   const handleSubmit = useCallback(
     (e: React.FormEvent) => {
@@ -52,9 +59,9 @@ export const SearchBar: React.FC<SearchBarProps> = ({
         clearTimeout(debounceTimeoutRef.current);
       }
 
-      onSearch(query.trim());
+      onSearchRef.current(query.trim());
     },
-    [query, onSearch]
+    [query]
   );
 
   const handleClear = useCallback(() => {
@@ -63,8 +70,8 @@ export const SearchBar: React.FC<SearchBarProps> = ({
     }
 
     setQuery("");
-    onSearch("");
-  }, [onSearch]);
+    onSearchRef.current("");
+  }, []);
 
   const handleInputChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -75,10 +82,9 @@ export const SearchBar: React.FC<SearchBarProps> = ({
 
   // update local state when initialValue changes (e.g., from URL params)
   useEffect(() => {
-    if (initialValue !== query) {
-      setQuery(initialValue);
-    }
-  }, [initialValue, query]);
+    // only sync when initialValue changes from parent (e.g., URL params)
+    setQuery(initialValue);
+  }, [initialValue]);
 
   // cleanup timeout on unmount
   useEffect(() => {
@@ -113,3 +119,5 @@ export const SearchBar: React.FC<SearchBarProps> = ({
     </form>
   );
 };
+
+export const SearchBar = memo(SearchBarComponent);
