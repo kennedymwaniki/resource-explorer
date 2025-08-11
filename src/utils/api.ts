@@ -27,7 +27,7 @@ export const buildCharacterUrl = (filters: CharacterFilters): string => {
 
 export const fetchCharacters = async (
   filters: CharacterFilters,
-  signal?: AbortSignal // Add AbortSignal parameter
+  signal?: AbortSignal
 ): Promise<ApiResponse> => {
   const url = buildCharacterUrl(filters);
 
@@ -43,7 +43,7 @@ export const fetchCharacters = async (
     const data = await response.json();
     return data;
   } catch (error) {
-    // Handle abort errors gracefully
+    // handle abort errors gracefully
     if (error instanceof Error && error.name === "AbortError") {
       console.log("Request was cancelled");
       throw error;
@@ -54,12 +54,9 @@ export const fetchCharacters = async (
   }
 };
 
-export const fetchCharacterById = async (
-  id: string,
-  signal?: AbortSignal // Add AbortSignal parameter
-) => {
+export const fetchCharacterById = async (id: string, signal?: AbortSignal) => {
   const response = await fetch(`${BASE_URL}/character/${id}`, {
-    signal, // Pass signal to fetch
+    signal,
   });
 
   if (!response.ok) {
@@ -68,6 +65,8 @@ export const fetchCharacterById = async (
 
   return response.json();
 };
+
+// ! Before debouncing
 
 // import type { ApiResponse, CharacterFilters } from "../types/charactertypes";
 

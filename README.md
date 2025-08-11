@@ -68,6 +68,7 @@ Visit [http://localhost:5173/character](http://localhost:5173/character) to star
 - **Request cancellation**: In‑flight requests are cancelled on input changes via TanStack Query passing `AbortSignal` to fetch.
 - **TanStack Router** for client-side routing and URL state management
 - **Context API & useState** for global and local state
+- **Performance‑oriented React patterns**: Strategic use of `useMemo` and `useCallback` across pages, contexts, and UI components to minimize unnecessary re‑renders and computations.
 - **Custom Hooks**:
 
   - `useCharacters`: Fetches and manages character data, handles loading, error, and pagination states.
@@ -80,6 +81,13 @@ Visit [http://localhost:5173/character](http://localhost:5173/character) to star
   - `Pagination`: Handles page navigation
   - `MyFavorites`: Drawer for viewing all favorited characters
   - `ThemeToggle`: Switches between light and dark themes
+
+### Performance details
+
+- Memoized derived data: Searched and filtered character lists are computed with `useMemo` to avoid recalculating when unrelated state changes.
+- Stable handlers: Event handlers such as search submit/clear, filter changes, pagination, character click, and favorites operations are wrapped with `useCallback` so child components don’t re-render unnecessarily.
+- Debounced search: The `SearchBar` debounces input and cancels previous timers to limit network calls and computations.
+- Cached fetching: TanStack Query caches results and performs background updates for snappy UX with minimal recomputation.
 
 ---
 

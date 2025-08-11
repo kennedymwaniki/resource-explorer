@@ -5,7 +5,7 @@ import { useNavigate } from "@tanstack/react-router";
 import type { Character } from "../../types/charactertypes";
 
 interface MyFavoritesProps {
-  onSelect?: () => void; // callback after selecting a favorite (to close drawer)
+  onSelect?: () => void; 
 }
 
 const MyFavorites: React.FC<MyFavoritesProps> = ({ onSelect }) => {

@@ -14,7 +14,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({
   initialValue = "",
 }) => {
   const [query, setQuery] = useState(initialValue);
-  const debounceTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const debounceTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const isInitialMount = useRef(true);
 
   // trigger search after user stops typing
@@ -25,7 +25,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({
       return;
     }
 
-    // Clear previous timeout
+    // clear previous timeout
     if (debounceTimeoutRef.current) {
       clearTimeout(debounceTimeoutRef.current);
     }
@@ -33,7 +33,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({
     // Set new timeout for debounced search
     debounceTimeoutRef.current = setTimeout(() => {
       onSearch(query.trim());
-    }, 500); 
+    }, 500);
 
     // cleanup timeout on component unmount or dependency change
     return () => {
@@ -47,7 +47,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({
     (e: React.FormEvent) => {
       e.preventDefault();
 
-      // Clear debounce timeout since we're submitting immediately
+      // clear debounce timeout since we're submitting immediately
       if (debounceTimeoutRef.current) {
         clearTimeout(debounceTimeoutRef.current);
       }
@@ -58,7 +58,6 @@ export const SearchBar: React.FC<SearchBarProps> = ({
   );
 
   const handleClear = useCallback(() => {
-    // clear debounce timeout
     if (debounceTimeoutRef.current) {
       clearTimeout(debounceTimeoutRef.current);
     }
@@ -79,7 +78,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({
     if (initialValue !== query) {
       setQuery(initialValue);
     }
-  }, [initialValue]);
+  }, [initialValue, query]);
 
   // cleanup timeout on unmount
   useEffect(() => {
