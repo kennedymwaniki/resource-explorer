@@ -4,7 +4,6 @@ import {
   Outlet,
   useParams,
 } from "@tanstack/react-router";
-import { TanStackRouterDevtools } from "@tanstack/router-devtools";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { CharactersPage } from "./pages/CharactersPage";
 import { CharacterDetailPage } from "./pages/CharacterDetailPage";
@@ -26,7 +25,7 @@ export const rootRoute = createRootRoute({
       <div className="App">
         <Outlet />
       </div>
-      <TanStackRouterDevtools />
+    
     </QueryClientProvider>
   ),
 });
